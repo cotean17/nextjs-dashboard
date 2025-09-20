@@ -1,5 +1,6 @@
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import { deleteInvoice } from '@/app/lib/actions'; 
 
 export function CreateInvoice() {
   return (
@@ -16,21 +17,25 @@ export function CreateInvoice() {
 export function UpdateInvoice({ id }: { id: string }) {
   return (
     <Link
-      href="/dashboard/invoices"
+      href={`/dashboard/invoices/${id}/edit`}  // ✅ point to the dynamic edit route
       className="rounded-md border p-2 hover:bg-gray-100"
     >
+      <span className="sr-only">Edit</span>
       <PencilIcon className="w-5" />
     </Link>
   );
 }
 
 export function DeleteInvoice({ id }: { id: string }) {
+  //  bind id so the server action receives it
+  const deleteInvoiceWithId = deleteInvoice.bind(null, id);
+
   return (
-    <>
+    <form action={deleteInvoiceWithId}>
       <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />
       </button>
-    </>
+    </form>
   );
 }
