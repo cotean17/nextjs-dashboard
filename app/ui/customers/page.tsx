@@ -1,5 +1,6 @@
+// app/dashboard/customers/page.tsx
+import { Metadata } from 'next';
 import { Suspense } from 'react';
-import type { Metadata } from 'next';
 import Search from '@/app/ui/search';
 import CustomersTable from '@/app/ui/customers/table';
 import Pagination from '@/app/ui/pagination';
@@ -10,25 +11,20 @@ export const metadata: Metadata = { title: 'Customers' };
 export default async function CustomersPage({
   searchParams,
 }: {
-  // NOTE: in Next 15+ you must await this
-  searchParams: Promise<{ query?: string; page?: string }>;
+  searchParams?: { query?: string; page?: string };
 }) {
-  const sp = await searchParams;
-  const query = sp?.query ?? '';
-  const currentPage = Number(sp?.page ?? '1');
+  const query = searchParams?.query ?? '';
+  const currentPage = Number(searchParams?.page ?? '1');
   const totalPages = await fetchCustomersPages(query);
 
   return (
     <div className="w-full">
-      <div className="mb-4 flex w-full items-center justify-between">
+      <div className="flex w-full items-center justify-between">
         <h1 className="text-2xl font-semibold">Customers</h1>
-        <div className="w-full max-w-[280px]">
-          <Search placeholder="Search customers..." />
-        </div>
+        <Search placeholder="Search customers..." />
       </div>
 
       <Suspense key={query + currentPage} fallback={<div>Loading…</div>}>
-        {/* If your table doesn't accept currentPage yet, see step 5 */}
         <CustomersTable query={query} currentPage={currentPage} />
       </Suspense>
 
